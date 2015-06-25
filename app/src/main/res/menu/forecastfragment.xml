@@ -5,4 +5,8 @@
         android:title="Impostazioni"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:icon="@drawable/refresh"
+        app:showAsAction="always" />
 </menu>
