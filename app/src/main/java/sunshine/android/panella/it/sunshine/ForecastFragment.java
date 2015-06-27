@@ -57,7 +57,8 @@ public class ForecastFragment extends Fragment {
             return true;
         }
         if (id == R.id.action_refresh) {
-            return true;
+            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
+            fetchWeatherTask.execute();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -93,6 +94,10 @@ public class ForecastFragment extends Fragment {
         return rootView;
 
     }
+
+
+    //inserisco tutto il codice che deve essere eseguito in background
+    // in una classe che estende AsyncTask
 
     public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 
