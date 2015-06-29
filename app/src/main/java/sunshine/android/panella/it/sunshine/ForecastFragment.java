@@ -1,5 +1,7 @@
 package sunshine.android.panella.it.sunshine;
-
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -104,7 +108,12 @@ public class ForecastFragment extends Fragment {
 
         private final String logmsg = "FetchWeatherTask Error";
 
-        protected Void doInBackground(String... params) {
+        protected Void doInBackground(String... params) {   // (String... params) significa che può essere passato un numero indefinito di stringhe che poi
+                                                            // possono essere richiamati all'interno del metodo con params[0], params[1]
+            if (params.length == 0) {
+                return null;
+            }
+
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -119,14 +128,21 @@ public class ForecastFragment extends Fragment {
             int numDays = 7;
 
             try {
+
+                //costruzione stringa per Uri builder
                 final String FORECAST_BASE_URL ="http://api.openweathermap.org/data/2.5/forecast/daily?";
                 final String QUERY_PARAM = "q";
                 final String FORMAT_PARAM = "mode";
                 final String UNITS_PARAM = "units";
                 final String DAYS_PARAM = "cnt";
 
+
+                // URI Builder (si può concatenare i metodi)
+                // Use Uri.buildUpon() - Constructs a new builder, copying the attributes from this Uri.
+                // Uri.appendQueryParameter(String key, String value) - Encodes the key and value and then appends the parameter to the query string.
+                // Uri.build() - per creare l'URL con i parametri inseriti
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, params[0])
+                        .appendQueryParameter(QUERY_PARAM, params[0])  // params[0] è il parametro che viene passato quando si chiama FetchWeatherTask.execute(params)
                         .appendQueryParameter(FORMAT_PARAM, format)
                         .appendQueryParameter(UNITS_PARAM, units)
                         .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
@@ -138,7 +154,7 @@ public class ForecastFragment extends Fragment {
                 URL url = new URL(builtUri.toString());
 
                 //testing purpose
-                Log.v(logmsg, "Built URI " + builtUri.toString());
+                Log.e(logmsg, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -183,7 +199,29 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
+            Log.e(logmsg, forecastJsonStr);
         return null;
         }
     }
+
+
+
+    public class WeatherDataParser {
+
+        /**
+         * Given a string of the form returned by the api call:
+         * http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7
+         * retrieve the maximum temperature for the day indicated by dayIndex
+         * (Note: 0-indexed, so 0 would refer to the first day).
+         */
+        public static double getMaxTemperatureForDay(String weatherJsonStr, int dayIndex)
+                throws JSONException {
+            // TODO: add parsing code here
+            return -1;
+        }
+
+    }
+
+
+
 }
